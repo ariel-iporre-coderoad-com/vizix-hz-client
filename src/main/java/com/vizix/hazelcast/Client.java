@@ -58,20 +58,29 @@ public class Client {
 
         showMapContent(map0);
 
+        System.out.println(map0.size());
+        for(int i = 0 ; i < 100; i++){
+            map0.get(1);
+        }
+
+        System.out.println("Hits local map near cache: " + map0.getLocalMapStats().getHits());
+        System.out.println("Hits local map near cache: " + map0.getLocalMapStats().getNearCacheStats().getHits());
+        IMap map01 = hz.getMap("CitiesLocal");
+        System.out.println("near cache local map size: " + map01.size());
+
+
         for (int i = 0; i < 60000; i++) {
-            logger.info("Iteration " + i + " query for the map things is:");
-            IMap map1 = hz.getMap("com.tierconnect.riot.iot.entities.Zone");
-            System.out.println("zones map in the node :   " + map1.getName());
-            System.out.println("zones map in the node:     " + map1.size());
+            logger.info("Iteration " + i + " (CLIENT MAP MONITOR)");
+            IMap thingTypesMap = hz.getMap("com.tierconnect.riot.iot.entities.ThingType");
+            System.out.println("Map name:   " + thingTypesMap.getName());
+            System.out.println("Map size:   " + thingTypesMap.size());
+            System.out.println("Local Map Stats:   " + thingTypesMap.getLocalMapStats());
+            System.out.println("Local Near Cache stats:   " + thingTypesMap.getLocalMapStats());
             try {
                 Thread.sleep(1000);                 //1000 milliseconds is one second.
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
-            IMap thingTypesMap = hz.getMap("com.tierconnect.riot.iot.entities.ThingType");
-            System.out.println("thingtypemap in the near cache:   " + thingTypesMap.getName());
-            System.out.println("thingtypemap in the near cache:   " + thingTypesMap.size());
-            System.out.println("thingtypemap in the near cache:   " + thingTypesMap.getLocalMapStats().getNearCacheStats().getHits());
         }
 
 
@@ -83,7 +92,8 @@ public class Client {
             Object value = map.get(k);
         }
 
-        System.out.println(map.getLocalMapStats().getNearCacheStats().getHits());
+        System.out.println("Local map stats: " + map.getLocalMapStats());
+        System.out.println("Near Cache map stats: " + map.getLocalMapStats().getNearCacheStats());
     }
 
     private static void nearCacheConfigFactory(ClientConfig clientConfig,String mapName) {
@@ -94,11 +104,11 @@ public class Client {
         }
         ncc.setName(mapName);
         ncc.setCacheLocalEntries(true);
-        ncc.setEvictionPolicy("LRU");
-        ncc.setMaxSize(500000);
-        ncc.setInvalidateOnChange(true);
-        Map<String, NearCacheConfig> nearCache =  new HashMap<String, NearCacheConfig>();
-        nearCache.put("ThingTypeLocal", ncc);
+        ncc.setEvictionPolicy("NONE");
+        ncc.setMaxSize(500000000);
+        ncc.setInvalidateOnChange(false);
+        //Map<String, NearCacheConfig> nearCache =  new HashMap<String, NearCacheConfig>();
+        //nearCache.put(mapName+"Local", ncc);
         clientConfig.addNearCacheConfig(ncc);
     }
 
