@@ -88,8 +88,11 @@ public class Client {
 
     private static void showMapContent(IMap map) {
         System.out.println(map.size());
+        int cnt = 0;
         for (Object k: map.keySet()) {
+            cnt += 1;
             Object value = map.get(k);
+            System.out.println("map content (" + cnt + "): " + value);
         }
 
         System.out.println("Local map stats: " + map.getLocalMapStats());
@@ -105,8 +108,8 @@ public class Client {
         ncc.setName(mapName);
         ncc.setCacheLocalEntries(true);
         ncc.setEvictionPolicy("NONE");
-        ncc.setMaxSize(500000000);
-        ncc.setInvalidateOnChange(false);
+        ncc.setMaxSize(5000);
+        ncc.setInvalidateOnChange(true);
         //Map<String, NearCacheConfig> nearCache =  new HashMap<String, NearCacheConfig>();
         //nearCache.put(mapName+"Local", ncc);
         clientConfig.addNearCacheConfig(ncc);
